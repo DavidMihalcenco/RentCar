@@ -1,0 +1,43 @@
+services:
+  db:
+    container_name: isi-db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'pass'
+      MYSQL_DATABASE: 'isi'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'pass'
+    ports:
+      - 3306:3306
+    volumes:
+      - ./container-data/db:/var/lib/mysql
+
+  adminer:
+    container_name: isi-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+  keycloak:
+    container_name: isi-keycloak
+    image: quay.io/keycloak/keycloak:23.0.1
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      KEYCLOAK_ADMIN: 'admin'
+      KEYCLOAK_ADMIN_PASSWORD: 'admin'
+    command:
+      - start-dev
+    volumes:
+      - ./container-data/keycloak:/opt/keycloak/data/h2
+
+#volumes:
+#  db-data:
+#  keycloak-data:
+
+
+#docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:23.0.1 start-dev
